@@ -6,4 +6,5 @@
 - [x] Save one-page results to jobsN.json.
 - [x] Click next and scrape the second page.
 - [x] Repeat until card count is reached.
-- [ ] Add CLI polish, file naming, and error handling.
+- [ ] More sophisticated anti-bot management (if needed).
+- [ ] Final polish, error handling, etc.
