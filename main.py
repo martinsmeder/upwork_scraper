@@ -6,9 +6,11 @@ from camoufox.sync_api import Camoufox
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 JOBS_LIST_SELECTOR = 'section[data-test="JobsList"]'
+JOB_CARD_SELECTOR = 'article[data-test="JobTile"]'
 DEFAULT_QUERY = "mcp"
 DEFAULT_CARD_COUNT = 10
 INITIAL_INTERACTION_DELAY_RANGE = (2.0, 5.0)
+POST_LIST_DELAY_RANGE = (1.0, 3.0)
 WAIT_TIMEOUT_MS = 5 * 60 * 1000
 
 
@@ -52,6 +54,18 @@ def wait_for_jobs_list(page) -> None:
         ) from exc
 
 
+def count_visible_cards(page) -> int:
+    jobs_list = page.locator(JOBS_LIST_SELECTOR)
+    cards = jobs_list.locator(JOB_CARD_SELECTOR)
+    visible_count = 0
+
+    for index in range(cards.count()):
+        if cards.nth(index).is_visible():
+            visible_count += 1
+
+    return visible_count
+
+
 def run(query: str) -> None:
     url = build_search_url(query)
 
@@ -60,6 +74,8 @@ def run(query: str) -> None:
         page.goto(url, wait_until="domcontentloaded")
         page.wait_for_timeout(int(random_delay(INITIAL_INTERACTION_DELAY_RANGE) * 1000))
         wait_for_jobs_list(page)
+        page.wait_for_timeout(int(random_delay(POST_LIST_DELAY_RANGE) * 1000))
+        print(count_visible_cards(page))
 
 
 def main() -> None:

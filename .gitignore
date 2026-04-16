@@ -1,4 +1,5 @@
 research/
 venv/
 .codex
+__pycache__
 notes.txt
