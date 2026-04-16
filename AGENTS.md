@@ -1,44 +1,57 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-This repository is currently a small research-oriented Python workspace. Keep top-level files minimal:
+## Project State
 
-- `README.md`: short project summary.
-- `notes.txt`: local workflow notes such as environment setup.
-- `research/`: saved HTML snapshots and text extracts used to inspect Upwork page structure.
-- `venv/`: local virtual environment for development; treat it as machine-specific and avoid editing installed packages directly.
+This repository is a work-in-progress Upwork scraper. The current target behavior is defined in `SPEC.md`, and execution order is tracked in `IMPLEMENTATION-PLAN.md`. New sessions should read those two files first.
 
-If scraper code is added, place runtime modules in a dedicated package such as `src/upwork_scraper/` and keep tests under `tests/`.
+Current code status:
 
-## Build, Test, and Development Commands
-Use the existing virtual environment workflow noted in the repo:
+- `main.py` is only a minimal Camoufox smoke test that opens Upwork search.
+- The real implementation is not complete yet.
+- `requirements.txt` reflects the current `venv` and includes `camoufox` and `playwright`.
 
-- `source venv/bin/activate`: activate the local Python environment.
-- `pip freeze > requirements.txt`: capture dependency versions after adding or upgrading packages.
-- `python -m pytest`: run the test suite once `tests/` exists.
-- `python -m playwright install`: install browser binaries if Playwright-based scraping is introduced.
+## Project Structure
 
-Prefer documenting any new repeatable workflow in `README.md` when adding commands.
+Keep top-level files small and purposeful:
 
-## Coding Style & Naming Conventions
-Use Python with 4-space indentation and PEP 8 naming:
+- `main.py`: current script entrypoint; intended final CLI is `python3 main.py [query] [card count]`.
+- `SPEC.md`: scraper requirements, output schema, selectors, and scope.
+- `IMPLEMENTATION-PLAN.md`: ordered checklist of implementation steps.
+- `research/`: saved DOM fragments and screenshots used to build selectors safely.
+- `notes.txt`: local setup notes.
+- `requirements.txt`: pinned dependencies from the active virtual environment.
 
-- `snake_case` for modules, functions, and variables.
-- `PascalCase` for classes.
-- `UPPER_CASE` for constants and environment variable names.
+## Research Files
 
-Keep scraping selectors and parsing logic separated so HTML changes are easier to isolate. Favor small functions over large scripts. If you add formatting or linting tools, standardize on one command path such as `ruff check .` and `ruff format .`.
+Prefer the focused artifacts over the large fallback dump:
 
-## Testing Guidelines
-Use `pytest` for new tests. Name files `test_<feature>.py` and keep fixtures close to the behavior they support. For scraper logic, add regression tests around HTML parsing using saved samples from `research/` instead of live network calls. Run tests locally before opening a PR.
+- `research/card.html`: single collapsed job card.
+- `research/card-container.html`: multi-card list fragment.
+- `research/navigation.html`: pagination controls.
+- `research/full-body.txt`: full page body; use only when broader context is needed.
+- `research/upwork-search-full-page.png`: visual reference.
 
-## Commit & Pull Request Guidelines
-The current history starts with `Initial commit`, so adopt short, imperative commit messages such as `Add parser for job card HTML`. Keep each commit focused on one change. PRs should include:
+## Development Workflow
 
-- a concise description of the change,
-- any setup or dependency updates,
-- linked issue or task context when available,
-- sample output or screenshots when UI or HTML fixtures change.
+Use the checked-in virtual environment unless the user explicitly changes that setup.
 
-## Security & Configuration Tips
-Do not commit secrets, session cookies, or captured account data. Store credentials in environment variables, and sanitize research artifacts before committing them.
+Key commands:
+
+- `source venv/bin/activate`
+- `python3 main.py "mcp" 10`
+- `python -m camoufox fetch`
+- `pip freeze > requirements.txt`
+
+## Implementation Notes
+
+Scrape collapsed cards only. Do not open job detail pages in the first version. Page-level collection is preferred over card-by-card interaction: load the list, extract all visible cards in order, click next, repeat.
+
+Store absent fields as `null`. Save outputs as `jobsN.json` without overwriting prior runs.
+
+## Style & Testing
+
+Use Python, 4-space indentation, and PEP 8 names. Keep selector lookup, parsing, pagination, and file output in separate functions. When tests are added, use `pytest` and build parser tests from files in `research/` instead of live network calls.
+
+## Safety
+
+Do not commit secrets, cookies, or private account data. Treat browser state and captured Upwork content as sensitive. Sanitize any saved artifacts before committing them.

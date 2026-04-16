@@ -32,15 +32,41 @@ The scraper opens a real browser, allows manual completion of any immediate Clou
 
 ## Human-Like Interaction Scope
 
-The automation should mimic a simple human workflow:
+The automation should mimic a simple human workflow for each results page:
 
 - open the page,
 - allow manual verification,
-- read the current card list in one pass,
-- click the next page,
+- move the mouse naturally,
+- bring focus to the visible results list,
+- copy the page worth of visible cards in one pass,
+- click the next page control,
 - repeat.
 
-No per-card clicking or artificial delay between cards is required. The browser should still avoid obviously robotic behavior during page navigation and setup.
+No per-card clicking or per-card delay is required. Human-like behavior should be added around page setup, list interaction, and pagination only.
+
+The browser session should remain:
+
+- visible,
+- foregrounded,
+- single-tab,
+- free of background polling,
+- free of auto-refresh,
+- free of hidden retries.
+
+## Human Interaction Timing
+
+Use page-level delays only, with slight randomized jitter inside each range:
+
+- after initial page load, before first meaningful interaction: roughly 2-5 seconds
+- after `JobsList` becomes visible and before extraction starts: roughly 1-3 seconds
+- before clicking the next page control: roughly 2-5 seconds
+- after next-page navigation and before extraction resumes: roughly 1-3 seconds
+
+Small cursor movement, hover, and list-focusing behavior should be used to make page interaction look like a human preparing to copy the visible results. The implementation should avoid large fixed sleeps and should prefer bounded random delays plus Playwright locator waiting.
+
+## List Stability Requirement
+
+Extraction must begin only after `JobsList` is both visible and stable. Stability means the results container is present, the visible cards have rendered, and pagination-triggered updates have settled before scraping starts.
 
 ## Extraction Scope
 
