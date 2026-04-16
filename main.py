@@ -1,12 +1,19 @@
+import json
 import random
 import sys
 from urllib.parse import quote_plus
+from urllib.parse import urljoin
 
 from camoufox.sync_api import Camoufox
+from playwright.sync_api import Locator
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
+UPWORK_BASE_URL = "https://www.upwork.com"
 JOBS_LIST_SELECTOR = 'section[data-test="JobsList"]'
 JOB_CARD_SELECTOR = 'article[data-test="JobTile"]'
+TITLE_LINK_SELECTOR = 'a[data-test="job-tile-title-link UpLink"]'
+POSTED_SELECTOR = 'small[data-test="job-pubilshed-date"]'
+DESCRIPTION_SELECTOR = '[data-test="UpCLineClamp JobDescription"] p'
 DEFAULT_QUERY = "mcp"
 DEFAULT_CARD_COUNT = 10
 INITIAL_INTERACTION_DELAY_RANGE = (2.0, 5.0)
@@ -54,16 +61,114 @@ def wait_for_jobs_list(page) -> None:
         ) from exc
 
 
-def count_visible_cards(page) -> int:
+def clean_text(value: str | None) -> str | None:
+    if value is None:
+        return None
+
+    cleaned = " ".join(value.split())
+    return cleaned or None
+
+
+def get_optional_text(locator: Locator) -> str | None:
+    if locator.count() == 0 or not locator.first.is_visible():
+        return None
+
+    return clean_text(locator.first.inner_text())
+
+
+def get_visible_card_locators(page) -> list[Locator]:
     jobs_list = page.locator(JOBS_LIST_SELECTOR)
     cards = jobs_list.locator(JOB_CARD_SELECTOR)
-    visible_count = 0
+    visible_cards: list[Locator] = []
 
     for index in range(cards.count()):
-        if cards.nth(index).is_visible():
-            visible_count += 1
+        card = cards.nth(index)
+        if card.is_visible():
+            visible_cards.append(card)
 
-    return visible_count
+    return visible_cards
+
+
+def strip_prefix(value: str | None, prefix: str) -> str | None:
+    if value is None:
+        return None
+
+    if value.startswith(prefix):
+        return clean_text(value.removeprefix(prefix))
+
+    return value
+
+
+def extract_job_type_and_budget(card: Locator) -> tuple[str | None, str | None]:
+    job_type_text = get_optional_text(card.locator('[data-test="job-type-label"]'))
+    fixed_budget_text = strip_prefix(
+        get_optional_text(card.locator('[data-test="is-fixed-price"]')),
+        "Est. budget:",
+    )
+
+    if job_type_text is None:
+        return None, fixed_budget_text
+
+    if job_type_text.startswith("Hourly:"):
+        return "Hourly", clean_text(job_type_text.removeprefix("Hourly:"))
+
+    if job_type_text == "Fixed price":
+        return job_type_text, fixed_budget_text
+
+    return job_type_text, fixed_budget_text
+
+
+def extract_posted(card: Locator) -> str | None:
+    posted_text = get_optional_text(card.locator(POSTED_SELECTOR))
+
+    if posted_text is None:
+        return None
+
+    if posted_text.startswith("Posted "):
+        return clean_text(posted_text.removeprefix("Posted "))
+
+    return posted_text
+
+
+def extract_duration(card: Locator) -> str | None:
+    return strip_prefix(
+        get_optional_text(card.locator('[data-test="duration-label"]')),
+        "Est. time:",
+    )
+
+
+def extract_job(card: Locator, query: str, fallback_page: int, fallback_position: int) -> dict:
+    title_link = card.locator(TITLE_LINK_SELECTOR)
+    title = get_optional_text(title_link)
+    relative_job_url = title_link.first.get_attribute("href") if title_link.count() else None
+    job_type, budget_or_rate = extract_job_type_and_budget(card)
+    page_number = card.get_attribute("data-ev-page_number")
+    position = card.get_attribute("data-ev-position")
+
+    return {
+        "query": query,
+        "page": int(page_number) if page_number and page_number.isdigit() else fallback_page,
+        "position": int(position) if position and position.isdigit() else fallback_position,
+        "job_id": card.get_attribute("data-test-key") or card.get_attribute("data-ev-job-uid"),
+        "title": title,
+        "job_url": urljoin(UPWORK_BASE_URL, relative_job_url) if relative_job_url else None,
+        "posted": extract_posted(card),
+        "job_type": job_type,
+        "experience_level": get_optional_text(card.locator('[data-test="experience-level"]')),
+        "budget_or_rate": budget_or_rate,
+        "duration": extract_duration(card),
+        "description": get_optional_text(card.locator(DESCRIPTION_SELECTOR)),
+    }
+
+
+def extract_jobs(page, query: str) -> list[dict]:
+    jobs: list[dict] = []
+    visible_cards = get_visible_card_locators(page)
+
+    for index, card in enumerate(visible_cards, start=1):
+        jobs.append(extract_job(card, query, fallback_page=1, fallback_position=index))
+
+    return jobs
 
 
 def run(query: str) -> None:
@@ -75,7 +180,7 @@ def run(query: str) -> None:
         page.wait_for_timeout(int(random_delay(INITIAL_INTERACTION_DELAY_RANGE) * 1000))
         wait_for_jobs_list(page)
         page.wait_for_timeout(int(random_delay(POST_LIST_DELAY_RANGE) * 1000))
-        print(count_visible_cards(page))
+        print(json.dumps(extract_jobs(page, query), indent=2))
 
 
 def main() -> None:
