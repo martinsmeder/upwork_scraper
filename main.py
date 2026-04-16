@@ -27,6 +27,7 @@ WAIT_TIMEOUT_MS = 5 * 60 * 1000
 OUTPUT_DIRECTORY_NAME = "output"
 OUTPUT_FILE_PREFIX = "jobs"
 OUTPUT_FILE_SUFFIX = ".json"
+RESULTS_PER_PAGE = 50
 
 
 def parse_args() -> tuple[str, int]:
@@ -48,7 +49,10 @@ def parse_args() -> tuple[str, int]:
 
 def build_search_url(query: str) -> str:
     encoded_query = quote_plus(query)
-    return f"https://www.upwork.com/nx/search/jobs/?q={encoded_query}"
+    return (
+        "https://www.upwork.com/nx/search/jobs/"
+        f"?q={encoded_query}&page=1&per_page={RESULTS_PER_PAGE}"
+    )
 
 
 def random_delay(range_seconds: tuple[float, float]) -> float:
@@ -199,7 +203,7 @@ def extract_job(card: Locator, query: str, fallback_page: int, fallback_position
     }
 
 
-def extract_jobs(page, query: str) -> list[dict]:
+def extract_jobs(page: Page, query: str) -> list[dict]:
     jobs: list[dict] = []
     visible_cards = get_visible_card_locators(page)
 
@@ -256,7 +260,7 @@ def save_jobs(jobs: list[dict], directory: Path) -> Path:
     return output_path
 
 
-def run(query: str) -> tuple[Path, int]:
+def run(query: str, card_count: int) -> tuple[Path, int]:
     url = build_search_url(query)
     jobs: list[dict] = []
 
@@ -265,24 +269,31 @@ def run(query: str) -> tuple[Path, int]:
         page.goto(url, wait_until="domcontentloaded")
         page.wait_for_timeout(int(random_delay(INITIAL_INTERACTION_DELAY_RANGE) * 1000))
         wait_for_jobs_list(page)
-        wait_for_list_stability(page)
-        page.wait_for_timeout(int(random_delay(POST_LIST_DELAY_RANGE) * 1000))
-        jobs.extend(extract_jobs(page, query))
+        while len(jobs) < card_count:
+            wait_for_list_stability(page)
+            page.wait_for_timeout(int(random_delay(POST_LIST_DELAY_RANGE) * 1000))
+            page_jobs = extract_jobs(page, query)
+            if not page_jobs:
+                break
 
-        if not go_to_next_page(page):
-            raise SystemExit("Failed to move to the second results page.")
+            remaining_slots = card_count - len(jobs)
+            jobs.extend(page_jobs[:remaining_slots])
 
-        jobs.extend(extract_jobs(page, query))
+            if len(jobs) >= card_count:
+                break
+
+            if not go_to_next_page(page):
+                break
 
     output_path = save_jobs(jobs, Path.cwd() / OUTPUT_DIRECTORY_NAME)
     return output_path, len(jobs)
 
 
 def main() -> None:
-    query, _card_count = parse_args()
+    query, card_count = parse_args()
 
     try:
-        output_path, job_count = run(query)
+        output_path, job_count = run(query, card_count)
     except OSError as exc:
         print(f"Failed to save results: {exc}")
         raise SystemExit(1) from exc
