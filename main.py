@@ -1,16 +1,19 @@
 import json
 import random
 import sys
+from pathlib import Path
 from urllib.parse import quote_plus
 from urllib.parse import urljoin
 
 from camoufox.sync_api import Camoufox
 from playwright.sync_api import Locator
+from playwright.sync_api import Page
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 UPWORK_BASE_URL = "https://www.upwork.com"
 JOBS_LIST_SELECTOR = 'section[data-test="JobsList"]'
 JOB_CARD_SELECTOR = 'article[data-test="JobTile"]'
+NEXT_PAGE_SELECTOR = '[data-test="next-page"]'
 TITLE_LINK_SELECTOR = 'a[data-test="job-tile-title-link UpLink"]'
 POSTED_SELECTOR = 'small[data-test="job-pubilshed-date"]'
 DESCRIPTION_SELECTOR = '[data-test="UpCLineClamp JobDescription"] p'
@@ -18,7 +21,11 @@ DEFAULT_QUERY = "mcp"
 DEFAULT_CARD_COUNT = 10
 INITIAL_INTERACTION_DELAY_RANGE = (2.0, 5.0)
 POST_LIST_DELAY_RANGE = (1.0, 3.0)
+PRE_NEXT_PAGE_DELAY_RANGE = (2.0, 5.0)
 WAIT_TIMEOUT_MS = 5 * 60 * 1000
+OUTPUT_DIRECTORY_NAME = "output"
+OUTPUT_FILE_PREFIX = "jobs"
+OUTPUT_FILE_SUFFIX = ".json"
 
 
 def parse_args() -> tuple[str, int]:
@@ -59,6 +66,26 @@ def wait_for_jobs_list(page) -> None:
             "Timed out waiting for the Upwork jobs list. "
             "Complete any manual verification and try again."
         ) from exc
+
+
+def wait_for_list_stability(page: Page) -> None:
+    jobs_list = page.locator(JOBS_LIST_SELECTOR)
+    jobs_list.wait_for(state="visible", timeout=WAIT_TIMEOUT_MS)
+    page.wait_for_function(
+        """
+        (selector) => {
+            const list = document.querySelector(selector);
+            if (!list) {
+                return false;
+            }
+
+            const cards = list.querySelectorAll('article[data-test="JobTile"]');
+            return cards.length > 0;
+        }
+        """,
+        arg=JOBS_LIST_SELECTOR,
+        timeout=WAIT_TIMEOUT_MS,
+    )
 
 
 def clean_text(value: str | None) -> str | None:
@@ -171,21 +198,99 @@ def extract_jobs(page, query: str) -> list[dict]:
     return jobs
 
 
-def run(query: str) -> None:
+def go_to_next_page(page: Page) -> bool:
+    next_page = page.locator(NEXT_PAGE_SELECTOR)
+    if next_page.count() == 0:
+        return False
+
+    next_button = next_page.first
+    if next_button.get_attribute("aria-disabled") == "true":
+        return False
+
+    current_first_job_id = None
+    visible_cards = get_visible_card_locators(page)
+    if visible_cards:
+        current_first_job_id = visible_cards[0].get_attribute("data-test-key")
+
+    page.wait_for_timeout(int(random_delay(PRE_NEXT_PAGE_DELAY_RANGE) * 1000))
+    next_button.hover()
+    next_button.click()
+
+    if current_first_job_id:
+        page.wait_for_function(
+            """
+            ([list_selector, card_selector, previous_job_id]) => {
+                const list = document.querySelector(list_selector);
+                if (!list) {
+                    return false;
+                }
+
+                const firstCard = list.querySelector(card_selector);
+                if (!firstCard) {
+                    return false;
+                }
+
+                return firstCard.getAttribute('data-test-key') !== previous_job_id;
+            }
+            """,
+            arg=[JOBS_LIST_SELECTOR, JOB_CARD_SELECTOR, current_first_job_id],
+            timeout=WAIT_TIMEOUT_MS,
+        )
+
+    wait_for_list_stability(page)
+    page.wait_for_timeout(int(random_delay(POST_LIST_DELAY_RANGE) * 1000))
+    return True
+
+
+def next_output_path(directory: Path) -> Path:
+    next_index = 1
+
+    while True:
+        candidate = directory / f"{OUTPUT_FILE_PREFIX}{next_index}{OUTPUT_FILE_SUFFIX}"
+        if not candidate.exists():
+            return candidate
+        next_index += 1
+
+
+def save_jobs(jobs: list[dict], directory: Path) -> Path:
+    directory.mkdir(parents=True, exist_ok=True)
+    output_path = next_output_path(directory)
+    output_path.write_text(json.dumps(jobs, indent=2) + "\n", encoding="utf-8")
+    return output_path
+
+
+def run(query: str) -> tuple[Path, int]:
     url = build_search_url(query)
+    jobs: list[dict] = []
 
     with Camoufox(headless=False) as browser:
         page = browser.new_page()
         page.goto(url, wait_until="domcontentloaded")
         page.wait_for_timeout(int(random_delay(INITIAL_INTERACTION_DELAY_RANGE) * 1000))
         wait_for_jobs_list(page)
+        wait_for_list_stability(page)
         page.wait_for_timeout(int(random_delay(POST_LIST_DELAY_RANGE) * 1000))
-        print(json.dumps(extract_jobs(page, query), indent=2))
+        jobs.extend(extract_jobs(page, query))
+
+        if not go_to_next_page(page):
+            raise SystemExit("Failed to move to the second results page.")
+
+        jobs.extend(extract_jobs(page, query))
+
+    output_path = save_jobs(jobs, Path.cwd() / OUTPUT_DIRECTORY_NAME)
+    return output_path, len(jobs)
 
 
 def main() -> None:
     query, _card_count = parse_args()
-    run(query)
+
+    try:
+        output_path, job_count = run(query)
+    except OSError as exc:
+        print(f"Failed to save results: {exc}")
+        raise SystemExit(1) from exc
+
+    print(f"Saved {job_count} jobs to {output_path}")
 
 
 if __name__ == "__main__":
