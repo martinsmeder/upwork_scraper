@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] Open browser, wait for manual captcha solve, detect JobsList, close.
+- [x] Open browser, wait for manual captcha solve, detect JobsList, close.
 - [ ] Open browser, detect JobsList, count visible cards, print count, close.
 - [ ] Extract all fields from all cards on one page, print JSON to stdout.
 - [ ] Save one-page results to jobsN.json.
