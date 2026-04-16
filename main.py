@@ -9,6 +9,7 @@ from camoufox.sync_api import Camoufox
 from playwright.sync_api import Locator
 from playwright.sync_api import Page
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import expect
 
 UPWORK_BASE_URL = "https://www.upwork.com"
 JOBS_LIST_SELECTOR = 'section[data-test="JobsList"]'
@@ -86,6 +87,16 @@ def wait_for_list_stability(page: Page) -> None:
         arg=JOBS_LIST_SELECTOR,
         timeout=WAIT_TIMEOUT_MS,
     )
+
+
+def move_mouse_to_locator(page: Page, locator: Locator) -> None:
+    box = locator.bounding_box()
+    if box is None:
+        return
+
+    target_x = box["x"] + (box["width"] / 2)
+    target_y = box["y"] + (box["height"] / 2)
+    page.mouse.move(target_x, target_y, steps=random.randint(12, 24))
 
 
 def clean_text(value: str | None) -> str | None:
@@ -207,35 +218,21 @@ def go_to_next_page(page: Page) -> bool:
     if next_button.get_attribute("aria-disabled") == "true":
         return False
 
-    current_first_job_id = None
-    visible_cards = get_visible_card_locators(page)
-    if visible_cards:
-        current_first_job_id = visible_cards[0].get_attribute("data-test-key")
+    next_href = next_button.get_attribute("href")
+    if not next_href:
+        return False
+
+    expected_url = urljoin(UPWORK_BASE_URL, next_href)
 
     page.wait_for_timeout(int(random_delay(PRE_NEXT_PAGE_DELAY_RANGE) * 1000))
+    next_button.scroll_into_view_if_needed()
+    expect(next_button).to_be_visible(timeout=WAIT_TIMEOUT_MS)
+    move_mouse_to_locator(page, next_button)
     next_button.hover()
-    next_button.click()
+    with page.expect_navigation(wait_until="domcontentloaded", timeout=WAIT_TIMEOUT_MS):
+        next_button.click()
 
-    if current_first_job_id:
-        page.wait_for_function(
-            """
-            ([list_selector, card_selector, previous_job_id]) => {
-                const list = document.querySelector(list_selector);
-                if (!list) {
-                    return false;
-                }
-
-                const firstCard = list.querySelector(card_selector);
-                if (!firstCard) {
-                    return false;
-                }
-
-                return firstCard.getAttribute('data-test-key') !== previous_job_id;
-            }
-            """,
-            arg=[JOBS_LIST_SELECTOR, JOB_CARD_SELECTOR, current_first_job_id],
-            timeout=WAIT_TIMEOUT_MS,
-        )
+    page.wait_for_url(expected_url, wait_until="domcontentloaded", timeout=WAIT_TIMEOUT_MS)
 
     wait_for_list_stability(page)
     page.wait_for_timeout(int(random_delay(POST_LIST_DELAY_RANGE) * 1000))
