@@ -44,13 +44,13 @@ python3 main.py [query] [jobs count]
 
 Arguments:
 
-- `query`: free-text Upwork search query
+- `query`: free-text title search query; the scraper wraps it as `title:(...)`
 - `jobs count`: total number of collapsed job cards to collect across pages
 
 Example:
 
 ```bash
-python3 main.py "ai agent" 75
+python3 main.py "full stack" 75
 ```
 
 ## Output
@@ -68,6 +68,7 @@ Each run creates the next available file and does not overwrite previous results
 
 The output is a flat JSON array of job objects with these keys:
 
+- `nr`
 - `query`
 - `page`
 - `position`
@@ -86,4 +87,5 @@ Missing fields are stored as `null`.
 ## Notes
 
 - The scraper currently relies on Upwork honoring `per_page=50`. If fewer cards render, it continues with however many are available.
+- The search query passed on the command line is wrapped into a title search, for example `"full stack"` becomes `title:(full stack)`.
 - Browser interaction is intentionally page-level only to reduce unnecessary actions.

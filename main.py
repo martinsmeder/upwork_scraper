@@ -35,6 +35,8 @@ SEARCH_FILTERS = {
     "sort": "recency",
     "t": "0,1",
 }
+QUERY_PREFIX = "title:("
+QUERY_SUFFIX = ")"
 
 
 def parse_args() -> tuple[str, int]:
@@ -55,11 +57,12 @@ def parse_args() -> tuple[str, int]:
 
 
 def build_search_url(query: str) -> str:
+    formatted_query = f"{QUERY_PREFIX}{query}{QUERY_SUFFIX}"
     params = {
         **SEARCH_FILTERS,
         "page": 1,
         "per_page": RESULTS_PER_PAGE,
-        "q": query,
+        "q": formatted_query,
     }
     return f"https://www.upwork.com/nx/search/jobs?{urlencode(params)}"
 
@@ -197,6 +200,7 @@ def extract_job(card: Locator, query: str, fallback_page: int, fallback_position
     position = card.get_attribute("data-ev-position")
 
     return {
+        "nr": None,
         "query": query,
         "page": int(page_number) if page_number and page_number.isdigit() else fallback_page,
         "position": int(position) if position and position.isdigit() else fallback_position,
@@ -269,6 +273,13 @@ def save_jobs(jobs: list[dict], directory: Path) -> Path:
     return output_path
 
 
+def assign_job_numbers(jobs: list[dict]) -> list[dict]:
+    for index, job in enumerate(jobs, start=1):
+        job["nr"] = index
+
+    return jobs
+
+
 def run(query: str, card_count: int) -> tuple[Path, int]:
     url = build_search_url(query)
     jobs: list[dict] = []
@@ -294,7 +305,8 @@ def run(query: str, card_count: int) -> tuple[Path, int]:
             if not go_to_next_page(page):
                 break
 
-    output_path = save_jobs(jobs, Path.cwd() / OUTPUT_DIRECTORY_NAME)
+    numbered_jobs = assign_job_numbers(jobs)
+    output_path = save_jobs(numbered_jobs, Path.cwd() / OUTPUT_DIRECTORY_NAME)
     return output_path, len(jobs)
 
 
