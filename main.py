@@ -2,7 +2,7 @@ import json
 import random
 import sys
 from pathlib import Path
-from urllib.parse import quote_plus
+from urllib.parse import urlencode
 from urllib.parse import urljoin
 
 from camoufox.sync_api import Camoufox
@@ -28,6 +28,13 @@ OUTPUT_DIRECTORY_NAME = "output"
 OUTPUT_FILE_PREFIX = "jobs"
 OUTPUT_FILE_SUFFIX = ".json"
 RESULTS_PER_PAGE = 50
+SEARCH_FILTERS = {
+    "amount": "500-",
+    "client_hires": "10-",
+    "hourly_rate": "30-",
+    "sort": "recency",
+    "t": "0,1",
+}
 
 
 def parse_args() -> tuple[str, int]:
@@ -48,11 +55,13 @@ def parse_args() -> tuple[str, int]:
 
 
 def build_search_url(query: str) -> str:
-    encoded_query = quote_plus(query)
-    return (
-        "https://www.upwork.com/nx/search/jobs/"
-        f"?q={encoded_query}&page=1&per_page={RESULTS_PER_PAGE}"
-    )
+    params = {
+        **SEARCH_FILTERS,
+        "page": 1,
+        "per_page": RESULTS_PER_PAGE,
+        "q": query,
+    }
+    return f"https://www.upwork.com/nx/search/jobs?{urlencode(params)}"
 
 
 def random_delay(range_seconds: tuple[float, float]) -> float:
