@@ -52,6 +52,17 @@ Store absent fields as `null`. Save outputs as `jobsN.json` without overwriting 
 
 Use Python, 4-space indentation, and PEP 8 names. Keep selector lookup, parsing, pagination, and file output in separate functions. When tests are added, use `pytest` and build parser tests from files in `research/` instead of live network calls.
 
+## Tooling Note
+
+`apply_patch` may fail in this repo with a sandbox mismatch error from the helper, even for simple file creates or updates. When that happens:
+
+- do not keep retrying `apply_patch`
+- use direct shell-based file edits instead, for example `python3 - <<'PY'` with `Path(...).write_text(...)` or a targeted heredoc rewrite
+- if a new file is needed, create it with shell tooling first
+- verify the final file contents after writing
+
+Future sessions should treat this as an environment/tooling issue, not a patch-formatting issue.
+
 ## Safety
 
 Do not commit secrets, cookies, or private account data. Treat browser state and captured Upwork content as sensitive. Sanitize any saved artifacts before committing them.
