@@ -1,0 +1,512 @@
+{
+  "source_file": "output/full-stack-classified.json",
+  "total_jobs": 300,
+  "delivery_type_summary": [
+    {
+      "delivery_type": "SaaS product",
+      "count": 130,
+      "share": 0.4333
+    },
+    {
+      "delivery_type": "AI-enabled application",
+      "count": 54,
+      "share": 0.18
+    },
+    {
+      "delivery_type": "Client or customer portal",
+      "count": 26,
+      "share": 0.0867
+    },
+    {
+      "delivery_type": "Automation or integration system",
+      "count": 19,
+      "share": 0.0633
+    },
+    {
+      "delivery_type": "Internal business tool",
+      "count": 17,
+      "share": 0.0567
+    },
+    {
+      "delivery_type": "Mobile plus web product",
+      "count": 17,
+      "share": 0.0567
+    },
+    {
+      "delivery_type": "Dashboard or analytics application",
+      "count": 15,
+      "share": 0.05
+    },
+    {
+      "delivery_type": "E-commerce system",
+      "count": 12,
+      "share": 0.04
+    },
+    {
+      "delivery_type": "Marketplace or directory platform",
+      "count": 9,
+      "share": 0.03
+    },
+    {
+      "delivery_type": "API or backend module",
+      "count": 1,
+      "share": 0.0033
+    }
+  ],
+  "solution_category_summary": [
+    {
+      "solution_category": "Not specified",
+      "count": 72,
+      "share": 0.24
+    },
+    {
+      "solution_category": "AI chatbot or agent workspace",
+      "count": 40,
+      "share": 0.1333
+    },
+    {
+      "solution_category": "Analytics dashboard",
+      "count": 30,
+      "share": 0.1
+    },
+    {
+      "solution_category": "Member portal",
+      "count": 29,
+      "share": 0.0967
+    },
+    {
+      "solution_category": "Content publishing and automation workflow",
+      "count": 19,
+      "share": 0.0633
+    },
+    {
+      "solution_category": "Operations back-office system",
+      "count": 14,
+      "share": 0.0467
+    },
+    {
+      "solution_category": "CRM and lead pipeline",
+      "count": 13,
+      "share": 0.0433
+    },
+    {
+      "solution_category": "Marketplace and listings platform",
+      "count": 12,
+      "share": 0.04
+    },
+    {
+      "solution_category": "E-commerce checkout and subscription flow",
+      "count": 11,
+      "share": 0.0367
+    },
+    {
+      "solution_category": "Admin portal",
+      "count": 7,
+      "share": 0.0233
+    },
+    {
+      "solution_category": "Approval and review system",
+      "count": 6,
+      "share": 0.02
+    },
+    {
+      "solution_category": "Billing and invoicing system",
+      "count": 6,
+      "share": 0.02
+    },
+    {
+      "solution_category": "Document and form processing",
+      "count": 6,
+      "share": 0.02
+    },
+    {
+      "solution_category": "Case management system",
+      "count": 5,
+      "share": 0.0167
+    },
+    {
+      "solution_category": "Field operations and dispatch system",
+      "count": 5,
+      "share": 0.0167
+    },
+    {
+      "solution_category": "Quoting and pricing tool",
+      "count": 5,
+      "share": 0.0167
+    },
+    {
+      "solution_category": "Referral and loyalty system",
+      "count": 5,
+      "share": 0.0167
+    },
+    {
+      "solution_category": "Scheduling and appointment booking",
+      "count": 4,
+      "share": 0.0133
+    },
+    {
+      "solution_category": "Website builder or multi-tenant CMS",
+      "count": 4,
+      "share": 0.0133
+    },
+    {
+      "solution_category": "Customer support inbox",
+      "count": 3,
+      "share": 0.01
+    },
+    {
+      "solution_category": "Online ordering and restaurant workflow",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "solution_category": "Project and task management workspace",
+      "count": 2,
+      "share": 0.0067
+    }
+  ],
+  "delivery_type_solution_category_summary": [
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Not specified",
+      "count": 67,
+      "share": 0.2233
+    },
+    {
+      "delivery_type": "AI-enabled application",
+      "solution_category": "AI chatbot or agent workspace",
+      "count": 33,
+      "share": 0.11
+    },
+    {
+      "delivery_type": "Dashboard or analytics application",
+      "solution_category": "Analytics dashboard",
+      "count": 15,
+      "share": 0.05
+    },
+    {
+      "delivery_type": "Client or customer portal",
+      "solution_category": "Member portal",
+      "count": 12,
+      "share": 0.04
+    },
+    {
+      "delivery_type": "AI-enabled application",
+      "solution_category": "Analytics dashboard",
+      "count": 11,
+      "share": 0.0367
+    },
+    {
+      "delivery_type": "Client or customer portal",
+      "solution_category": "Content publishing and automation workflow",
+      "count": 11,
+      "share": 0.0367
+    },
+    {
+      "delivery_type": "E-commerce system",
+      "solution_category": "E-commerce checkout and subscription flow",
+      "count": 10,
+      "share": 0.0333
+    },
+    {
+      "delivery_type": "Marketplace or directory platform",
+      "solution_category": "Marketplace and listings platform",
+      "count": 9,
+      "share": 0.03
+    },
+    {
+      "delivery_type": "Mobile plus web product",
+      "solution_category": "Member portal",
+      "count": 8,
+      "share": 0.0267
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Operations back-office system",
+      "count": 7,
+      "share": 0.0233
+    },
+    {
+      "delivery_type": "Automation or integration system",
+      "solution_category": "CRM and lead pipeline",
+      "count": 6,
+      "share": 0.02
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Member portal",
+      "count": 6,
+      "share": 0.02
+    },
+    {
+      "delivery_type": "AI-enabled application",
+      "solution_category": "Not specified",
+      "count": 5,
+      "share": 0.0167
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Billing and invoicing system",
+      "count": 5,
+      "share": 0.0167
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "CRM and lead pipeline",
+      "count": 5,
+      "share": 0.0167
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Document and form processing",
+      "count": 5,
+      "share": 0.0167
+    },
+    {
+      "delivery_type": "Automation or integration system",
+      "solution_category": "AI chatbot or agent workspace",
+      "count": 4,
+      "share": 0.0133
+    },
+    {
+      "delivery_type": "Automation or integration system",
+      "solution_category": "Operations back-office system",
+      "count": 4,
+      "share": 0.0133
+    },
+    {
+      "delivery_type": "Internal business tool",
+      "solution_category": "Quoting and pricing tool",
+      "count": 4,
+      "share": 0.0133
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Approval and review system",
+      "count": 4,
+      "share": 0.0133
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Case management system",
+      "count": 4,
+      "share": 0.0133
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Content publishing and automation workflow",
+      "count": 4,
+      "share": 0.0133
+    },
+    {
+      "delivery_type": "AI-enabled application",
+      "solution_category": "Content publishing and automation workflow",
+      "count": 3,
+      "share": 0.01
+    },
+    {
+      "delivery_type": "Internal business tool",
+      "solution_category": "Admin portal",
+      "count": 3,
+      "share": 0.01
+    },
+    {
+      "delivery_type": "Internal business tool",
+      "solution_category": "Operations back-office system",
+      "count": 3,
+      "share": 0.01
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "AI chatbot or agent workspace",
+      "count": 3,
+      "share": 0.01
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Analytics dashboard",
+      "count": 3,
+      "share": 0.01
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Marketplace and listings platform",
+      "count": 3,
+      "share": 0.01
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Referral and loyalty system",
+      "count": 3,
+      "share": 0.01
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Scheduling and appointment booking",
+      "count": 3,
+      "share": 0.01
+    },
+    {
+      "delivery_type": "AI-enabled application",
+      "solution_category": "Member portal",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "delivery_type": "Automation or integration system",
+      "solution_category": "Admin portal",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "delivery_type": "Automation or integration system",
+      "solution_category": "Referral and loyalty system",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "delivery_type": "Client or customer portal",
+      "solution_category": "Website builder or multi-tenant CMS",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "delivery_type": "Internal business tool",
+      "solution_category": "Approval and review system",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "delivery_type": "Internal business tool",
+      "solution_category": "Field operations and dispatch system",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "delivery_type": "Mobile plus web product",
+      "solution_category": "Field operations and dispatch system",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Customer support inbox",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Project and task management workspace",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Website builder or multi-tenant CMS",
+      "count": 2,
+      "share": 0.0067
+    },
+    {
+      "delivery_type": "API or backend module",
+      "solution_category": "Quoting and pricing tool",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Automation or integration system",
+      "solution_category": "Billing and invoicing system",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Client or customer portal",
+      "solution_category": "Analytics dashboard",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "E-commerce system",
+      "solution_category": "Case management system",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "E-commerce system",
+      "solution_category": "Online ordering and restaurant workflow",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Internal business tool",
+      "solution_category": "CRM and lead pipeline",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Internal business tool",
+      "solution_category": "Document and form processing",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Internal business tool",
+      "solution_category": "Member portal",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Mobile plus web product",
+      "solution_category": "Admin portal",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Mobile plus web product",
+      "solution_category": "CRM and lead pipeline",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Mobile plus web product",
+      "solution_category": "Content publishing and automation workflow",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Mobile plus web product",
+      "solution_category": "Customer support inbox",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Mobile plus web product",
+      "solution_category": "E-commerce checkout and subscription flow",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Mobile plus web product",
+      "solution_category": "Online ordering and restaurant workflow",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "Mobile plus web product",
+      "solution_category": "Scheduling and appointment booking",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Admin portal",
+      "count": 1,
+      "share": 0.0033
+    },
+    {
+      "delivery_type": "SaaS product",
+      "solution_category": "Field operations and dispatch system",
+      "count": 1,
+      "share": 0.0033
+    }
+  ]
+}
