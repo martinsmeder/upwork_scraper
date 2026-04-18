@@ -2,4 +2,8 @@ research/
 venv/
 .codex
 __pycache__
+output/ai-automation-jobs.json
+output/ai-automation-classified.json
+output/full-stack-jobs.json
+output/full-stack-classified.json
 notes.txt
