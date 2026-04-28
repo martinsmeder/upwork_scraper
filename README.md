@@ -39,7 +39,7 @@ Run from the repository root:
 
 ```bash
 source venv/bin/activate
-python3 main.py [query] [jobs count]
+python3 main.py "query" count
 ```
 
 Arguments:
@@ -50,7 +50,7 @@ Arguments:
 Example:
 
 ```bash
-python3 main.py "full stack" 75
+python3 main.py "full stack" 150
 ```
 
 ## Output
