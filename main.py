@@ -16,8 +16,6 @@ NEXT_PAGE_SELECTOR = '[data-test="next-page"]'
 TITLE_LINK_SELECTOR = 'a[data-test="job-tile-title-link UpLink"]'
 POSTED_SELECTOR = 'small[data-test="job-pubilshed-date"]'
 DESCRIPTION_SELECTOR = '[data-test="UpCLineClamp JobDescription"] p'
-DEFAULT_QUERY = "mcp"
-DEFAULT_CARD_COUNT = 10
 INITIAL_PAGE_DELAY_RANGE = (1.5, 3.0)
 CARD_SCAN_DELAY_RANGE = (0.03, 0.08)
 PRE_NEXT_PAGE_DELAY_RANGE = (1.5, 3.0)
@@ -40,18 +38,20 @@ SEARCH_PATH = "/nx/search/jobs"
 
 
 def parse_args() -> tuple[str, int]:
-    query = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_QUERY
+    if len(sys.argv) != 3:
+        raise SystemExit('usage: python3 main.py "query" count')
 
-    if len(sys.argv) > 2:
-        try:
-            card_count = int(sys.argv[2])
-        except ValueError as exc:
-            raise SystemExit("card count must be an integer") from exc
+    query = sys.argv[1].strip()
+    if not query:
+        raise SystemExit("query must not be empty")
 
-        if card_count <= 0:
-            raise SystemExit("card count must be greater than zero")
-    else:
-        card_count = DEFAULT_CARD_COUNT
+    try:
+        card_count = int(sys.argv[2])
+    except ValueError as exc:
+        raise SystemExit("card count must be an integer") from exc
+
+    if card_count <= 0:
+        raise SystemExit("card count must be greater than zero")
 
     return query, card_count
 
