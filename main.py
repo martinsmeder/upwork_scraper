@@ -26,8 +26,8 @@ OUTPUT_FILE_PREFIX = "jobs"
 OUTPUT_FILE_SUFFIX = ".json"
 RESULTS_PER_PAGE = 50
 SEARCH_FILTERS = {
-    "amount": "500-",
-    "client_hires": "10-",
+    "amount": "100-",
+    "client_hires": "1-9,10-",
     "hourly_rate": "30-",
     "sort": "recency",
     "t": "0,1",

@@ -1,0 +1,70 @@
+Demand Summary
+==============
+
+Format:
+Category/Categories: count (share)
+
+Source: scraping-jobs-summary.json
+------------------------------------
+Total jobs: 136
+
+delivery_type
+- One-time dataset: 52 (0.3824)
+- Custom scraping system: 37 (0.2721)
+- Workflow automation: 19 (0.1397)
+- Advisory / content / go-to-market: 11 (0.0809)
+- Maintenance / optimization: 11 (0.0809)
+- Recurring data feed: 6 (0.0441)
+
+solution_category
+- Lead generation and contact discovery: 30 (0.2206)
+- Generic scraping engineering: 25 (0.1838)
+- Product, inventory, and pricing intelligence: 20 (0.1471)
+- Not specified: 15 (0.1103)
+- Business, provider, and location directory intelligence: 9 (0.0662)
+- Social media and creator intelligence: 9 (0.0662)
+- Real estate, rental, and property intelligence: 8 (0.0588)
+- Events, jobs, and opportunity monitoring: 7 (0.0515)
+- Market research and competitive intelligence: 5 (0.0368)
+- Public records, legal, and compliance data: 5 (0.0368)
+- Document library extraction and content migration: 3 (0.0221)
+
+combined delivery_type_solution_category
+- One-time dataset | Lead generation and contact discovery: 22 (0.1618)
+- Custom scraping system | Product, inventory, and pricing intelligence: 13 (0.0956)
+- Advisory / content / go-to-market | Not specified: 10 (0.0735)
+- Maintenance / optimization | Generic scraping engineering: 7 (0.0515)
+- Custom scraping system | Generic scraping engineering: 6 (0.0441)
+- One-time dataset | Business, provider, and location directory intelligence: 5 (0.0368)
+- One-time dataset | Generic scraping engineering: 5 (0.0368)
+- Workflow automation | Generic scraping engineering: 5 (0.0368)
+- Custom scraping system | Real estate, rental, and property intelligence: 4 (0.0294)
+- One-time dataset | Not specified: 4 (0.0294)
+- One-time dataset | Product, inventory, and pricing intelligence: 4 (0.0294)
+- Custom scraping system | Business, provider, and location directory intelligence: 3 (0.0221)
+- Custom scraping system | Lead generation and contact discovery: 3 (0.0221)
+- Custom scraping system | Social media and creator intelligence: 3 (0.0221)
+- One-time dataset | Events, jobs, and opportunity monitoring: 3 (0.0221)
+- One-time dataset | Market research and competitive intelligence: 3 (0.0221)
+- Workflow automation | Events, jobs, and opportunity monitoring: 3 (0.0221)
+- Workflow automation | Lead generation and contact discovery: 3 (0.0221)
+- Workflow automation | Social media and creator intelligence: 3 (0.0221)
+- Custom scraping system | Market research and competitive intelligence: 2 (0.0147)
+- Custom scraping system | Public records, legal, and compliance data: 2 (0.0147)
+- Maintenance / optimization | Product, inventory, and pricing intelligence: 2 (0.0147)
+- One-time dataset | Real estate, rental, and property intelligence: 2 (0.0147)
+- One-time dataset | Social media and creator intelligence: 2 (0.0147)
+- Recurring data feed | Generic scraping engineering: 2 (0.0147)
+- Recurring data feed | Real estate, rental, and property intelligence: 2 (0.0147)
+- Workflow automation | Document library extraction and content migration: 2 (0.0147)
+- Advisory / content / go-to-market | Lead generation and contact discovery: 1 (0.0074)
+- Custom scraping system | Not specified: 1 (0.0074)
+- Maintenance / optimization | Lead generation and contact discovery: 1 (0.0074)
+- Maintenance / optimization | Public records, legal, and compliance data: 1 (0.0074)
+- One-time dataset | Document library extraction and content migration: 1 (0.0074)
+- One-time dataset | Public records, legal, and compliance data: 1 (0.0074)
+- Recurring data feed | Events, jobs, and opportunity monitoring: 1 (0.0074)
+- Recurring data feed | Social media and creator intelligence: 1 (0.0074)
+- Workflow automation | Business, provider, and location directory intelligence: 1 (0.0074)
+- Workflow automation | Product, inventory, and pricing intelligence: 1 (0.0074)
+- Workflow automation | Public records, legal, and compliance data: 1 (0.0074)
